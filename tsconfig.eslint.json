@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/**/*",
+    "tests/**/*",
+    "tools/**/*",
+    "mongo_query/**/*",
+    "scripts/**/*",
+    ".eslintrc.js",
+    "jest.config.js",
+  ]
+}
