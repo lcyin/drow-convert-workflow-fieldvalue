@@ -1,7 +1,6 @@
 import { ConvertedRecord, ConvertedValue } from './interface/convertedRecord';
 import { record, workflow, projectUsers } from './data/data2';
 import { getWorkflowFieldValueFormatValueString } from './utils';
-import { isImportTypeNode } from 'typescript';
 import { calculateFormula } from './formula-utils';
 
 function convertRecord(record, workflow, projectUsers): ConvertedRecord {
