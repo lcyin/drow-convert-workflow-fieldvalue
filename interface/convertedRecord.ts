@@ -1,3 +1,20 @@
+type FieldValueType =
+  | 'String'
+  | 'LongText'
+  | 'AutoId'
+  | 'Set'
+  | 'Number'
+  | 'Boolean'
+  | 'DateTime'
+  | 'File'
+  | 'Image'
+  | 'Url'
+  | 'FilePath'
+  | 'User'
+  | 'Formula'
+  | 'Model'
+  | 'Table';
+
 export interface ConvertedRecord {
   referenceId: string;
   documentId: string;
@@ -15,15 +32,14 @@ export interface ConvertedRecord {
   createdName: string;
   createDate: string;
   lastModifyDate: string;
-  values: {
-    [key: string]: SingleValue | MultiValue | TableValue;
-  };
+  values: ConvertedValue[];
 }
 
-export interface ConvertedValue {}
+export type ConvertedValue = SingleValue | MultiValue | TableValue;
 
 export interface BaseValue {
   fieldName: string;
+  fieldId: string;
 }
 // Todo
 // Formula

@@ -8,7 +8,6 @@ describe('First Test', () => {
 });
 
 describe('Convert Values', () => {
-  const recordValues = record.values;
   let mappedHeaderValue = {};
 
   beforeAll(() => {
@@ -23,7 +22,7 @@ describe('Convert Values', () => {
     });
   });
 
-  xdescribe('Single Value', () => {
+  describe('Single Value', () => {
     it('Convert String', () => {
       const { header, value } = mappedHeaderValue['String'];
       const convertedValue = getConvertedValueObject(
@@ -39,6 +38,7 @@ describe('Convert Values', () => {
         fieldName: 'Field 1',
         displayValue: 'sasds',
         String: 'sasds',
+        fieldId: '61e8c21da6d0ad43400c136a',
       });
     });
 
@@ -59,6 +59,7 @@ describe('Convert Values', () => {
           'asdasdsad\nasdsadasda\nasdasdsadas\nasdsadasd\nasdasdsad\nasdasdas\nasdasdsa',
         LongText:
           'asdasdsad\nasdsadasda\nasdasdsadas\nasdsadasd\nasdasdsad\nasdasdas\nasdasdsa',
+        fieldId: '61e8c21da6d0ad43400c136b',
       });
     });
 
@@ -77,6 +78,7 @@ describe('Convert Values', () => {
         fieldName: 'Field 3',
         displayValue: '1232123432123',
         Number: 1232123432123,
+        fieldId: '61e8c21da6d0ad43400c136c',
       });
     });
 
@@ -95,6 +97,7 @@ describe('Convert Values', () => {
         fieldName: 'Field 4',
         displayValue: '2022-01-19',
         DateTime: new Date('2022-01-19T00:00:00.000Z'),
+        fieldId: '61e8c21da6d0ad43400c136d',
       });
     });
 
@@ -113,6 +116,7 @@ describe('Convert Values', () => {
         fieldName: 'Field 5',
         displayValue: 'true',
         Boolean: true,
+        fieldId: '61e8c21da6d0ad43400c136e',
       });
     });
 
@@ -131,6 +135,7 @@ describe('Convert Values', () => {
         fieldName: 'Field 6',
         displayValue: 'test1',
         Set: '61e7e074a6d0ad43400a21cd',
+        fieldId: '61e8c21da6d0ad43400c136f',
       });
     });
 
@@ -149,6 +154,7 @@ describe('Convert Values', () => {
         fieldName: 'Field 7',
         displayValue: 'kevinlai',
         User: '5cb3ebf7b06cab0f1af988f3',
+        fieldId: '61e8c21da6d0ad43400c1370',
       });
     });
 
@@ -167,6 +173,7 @@ describe('Convert Values', () => {
         fieldName: 'Field 10',
         displayValue: '213312/sadfs',
         FilePath: '213312/sadfs',
+        fieldId: '61e8c21da6d0ad43400c1375',
       });
     });
 
@@ -185,6 +192,7 @@ describe('Convert Values', () => {
         fieldName: 'Field 11',
         displayValue: 'google.com',
         Url: 'google.com',
+        fieldId: '61e8c21da6d0ad43400c1376',
       });
     });
 
@@ -206,6 +214,7 @@ describe('Convert Values', () => {
           prefix: 'a-',
           value: 1,
         },
+        fieldId: '61e8c21da6d0ad43400c1377',
       });
     });
 
@@ -222,13 +231,34 @@ describe('Convert Values', () => {
 
       expect(convertedValue).toEqual({
         fieldName: 'Field 23',
-        displayValue: '',
-        Formula: '1232123432118',
+        displayValue: '1232123432118',
+        fieldId: '61e8c21da6d0ad43400c13a4',
+        Formula: [
+          {
+            items: [
+              {
+                fieldId: '61e7dfeaa6d0ad43400a1f87',
+                fieldName: 'Field 3',
+                fieldType: 'Number',
+                isSub: false,
+              },
+              'minus',
+              {
+                fieldId: 'Constant',
+                fieldType: 'Constant',
+                fieldName: 'Constant',
+                isSub: false,
+                unit: null,
+                constant: 5,
+              },
+            ],
+          },
+        ],
       });
     });
   });
 
-  xdescribe('Multiple Value', () => {
+  describe('Multiple Value', () => {
     it('Convert Multi-String', () => {
       const { header, value } = mappedHeaderValue['Multi-String'];
       const convertedValue = getConvertedValueObject(
@@ -244,6 +274,7 @@ describe('Convert Values', () => {
         fieldName: 'Field 13',
         displayValue: ['nbvcvb', 'ererewert'],
         String: ['nbvcvb', 'ererewert'],
+        fieldId: '61e8c21da6d0ad43400c1379',
       });
     });
 
@@ -272,6 +303,7 @@ describe('Convert Values', () => {
           'gfsfdgeds\ngfdfsd\ngfdfdsggdsdfsg',
           'gfsfdgeds\ngfdfsd\ngfdfdsggdsdfsggfsfdgeds\ngfdfsd\ngfdfdsggdsdfsggfsfdgeds\ngfdfsd\ngfdfdsggdsdfsggfsfdgeds\ngfdfsd\ngfdfdsggdsdfsg',
         ],
+        fieldId: '61e8c21da6d0ad43400c137a',
       });
     });
 
@@ -290,6 +322,7 @@ describe('Convert Values', () => {
         fieldName: 'Field 15',
         displayValue: ['111', '2222', '3333'],
         Number: [111, 2222, 3333],
+        fieldId: '61e8c21da6d0ad43400c137b',
       });
     });
 
@@ -313,6 +346,7 @@ describe('Convert Values', () => {
           new Date('2022-01-20T00:00:00.000Z'),
           new Date('2022-01-21T00:00:00.000Z'),
         ],
+        fieldId: '61e8c21da6d0ad43400c137c',
       });
     });
 
@@ -331,6 +365,7 @@ describe('Convert Values', () => {
         fieldName: 'Field 17',
         displayValue: ['test4', 'test3'],
         Set: ['61e7e098a6d0ad43400a2308', '61e7e098a6d0ad43400a2307'],
+        fieldId: '61e8c21da6d0ad43400c137d',
       });
     });
 
@@ -349,6 +384,7 @@ describe('Convert Values', () => {
         fieldName: 'Field 18',
         displayValue: ['kevinlai', 'kevinlaibuildit1'],
         User: ['5cb3ebf7b06cab0f1af988f3', '5dfc9550f2743d6d65e8e5a1'],
+        fieldId: '61e8c21da6d0ad43400c137e',
       });
     });
 
@@ -367,6 +403,7 @@ describe('Convert Values', () => {
         fieldName: 'Field 19',
         displayValue: ['ddd/ddd', 'ccc/ccc'],
         FilePath: ['ddd/ddd', 'ccc/ccc'],
+        fieldId: '61e8c21da6d0ad43400c137f',
       });
     });
 
@@ -385,6 +422,7 @@ describe('Convert Values', () => {
         fieldName: 'Field 20',
         displayValue: ['drow.cloud', 'uat2.drow.cloud'],
         Url: ['drow.cloud', 'uat2.drow.cloud'],
+        fieldId: '61e8c21da6d0ad43400c1380',
       });
     });
 
@@ -416,6 +454,7 @@ describe('Convert Values', () => {
             value: 3,
           },
         ],
+        fieldId: '61e8c21da6d0ad43400c1381',
       });
     });
 
@@ -433,6 +472,7 @@ describe('Convert Values', () => {
       expect(convertedValue).toEqual({
         fieldName: 'Field 8',
         displayValue: ['oauth2 drow authentication flow.jpg'],
+        fieldId: '61e8c21da6d0ad43400c1371',
         Image: [
           {
             fileName: 'oauth2 drow authentication flow',
@@ -456,6 +496,7 @@ describe('Convert Values', () => {
       expect(convertedValue).toEqual({
         fieldName: 'Field 9',
         displayValue: ['34c8e7a6-9e53-4246-9a62-25dff54f09bf.pdf'],
+        fieldId: '61e8c21da6d0ad43400c1373',
         File: [
           {
             fileName: '34c8e7a6-9e53-4246-9a62-25dff54f09bf',
@@ -469,143 +510,208 @@ describe('Convert Values', () => {
   describe('Table Subvalues', () => {
     const result = {
       Table: [
-        {
-          '61e7e318a6d0ad43400a2b04': {
+        [
+          {
             fieldName: 'Sub Field 0',
             displayValue: 'adgghfdfsn',
+            fieldId: '61e8c1d8a6d0ad43400c0785',
             String: 'adgghfdfsn',
           },
-          '61e7e318a6d0ad43400a2b05': {
+          {
             fieldName: 'Sub Field 1',
             displayValue: 'asfgfafdsdgsd\ndfasdsdsfs\nadfgdsfbgdas',
+            fieldId: '61e8c1d8a6d0ad43400c0786',
             LongText: 'asfgfafdsdgsd\ndfasdsdsfs\nadfgdsfbgdas',
           },
-          '61e7e318a6d0ad43400a2b06': {
+          {
             fieldName: 'Sub Field 2',
             displayValue: '43565435',
+            fieldId: '61e8c1d8a6d0ad43400c0787',
             Number: 43565435,
           },
-          '61e7e318a6d0ad43400a2b07': {
+          {
             fieldName: 'Sub Field 3',
             displayValue: '2022-01-22',
+            fieldId: '61e8c1d8a6d0ad43400c0788',
             DateTime: new Date('2022-01-22T00:00:00.000Z'),
           },
-          '61e7e318a6d0ad43400a2b08': {
+          {
             fieldName: 'Sub Field 4',
             displayValue: 'true',
+            fieldId: '61e8c1d8a6d0ad43400c0789',
             Boolean: true,
           },
-          '61e7e318a6d0ad43400a2b09': {
+          {
             fieldName: 'Sub Field 5',
             displayValue: 'test3',
+            fieldId: '61e8c1d8a6d0ad43400c078a',
             Set: '61e7e318a6d0ad43400a2b3f',
           },
-          '61e7e318a6d0ad43400a2b0a': {
+          {
             fieldName: 'Sub Field 6',
             displayValue: 'kevinlai',
+            fieldId: '61e8c1d8a6d0ad43400c078b',
             User: '5cb3ebf7b06cab0f1af988f3',
           },
-          '61e7e318a6d0ad43400a2b0b': {
+          {
             fieldName: 'Sub Field 7',
             displayValue: 'oauth2 drow authentication flow.jpg',
+            fieldId: '61e8c1d8a6d0ad43400c078c',
             Image: {
               fileName: 'oauth2 drow authentication flow',
               fileType: 'jpg',
             },
           },
-          '61e7e318a6d0ad43400a2b0c': {
+          {
             fieldName: 'Sub Field 8',
             displayValue: 'oauth2 drow authentication flow.jpg',
+            fieldId: '61e8c1d8a6d0ad43400c078e',
             File: {
               fileName: 'oauth2 drow authentication flow',
               fileType: 'jpg',
             },
           },
-          '61e7e318a6d0ad43400a2b0d': {
+          {
             fieldName: 'Sub Field 9',
             displayValue: 'erhtre/erhtrte',
+            fieldId: '61e8c1d8a6d0ad43400c0790',
             FilePath: 'erhtre/erhtrte',
           },
-          '61e7e318a6d0ad43400a2b0e': {
+          {
             fieldName: 'Sub Field 10',
             displayValue: 'drow.cloud',
+            fieldId: '61e8c1d8a6d0ad43400c0791',
             Url: 'drow.cloud',
           },
-          '61e7e318a6d0ad43400a2b0f': {
+          {
             fieldName: 'Sub Field 11',
-            displayValue: '',
-            Formula: '43565445',
+            displayValue: '43565445',
+            fieldId: '61e8c1d8a6d0ad43400c0792',
+            Formula: [
+              {
+                items: [
+                  {
+                    fieldId: '61e7e318a6d0ad43400a2b06',
+                    fieldType: 'Number',
+                    fieldName: 'Sub Field 2',
+                    isSub: true,
+                  },
+                  'plus',
+                  {
+                    fieldId: 'Constant',
+                    fieldType: 'Constant',
+                    fieldName: 'Constant',
+                    isSub: false,
+                    unit: null,
+                    constant: 10,
+                  },
+                ],
+              },
+            ],
           },
-        },
-        {
-          '61e7e318a6d0ad43400a2b04': {
+        ],
+        [
+          {
             fieldName: 'Sub Field 0',
             displayValue: 'dwmjmgjm',
+            fieldId: '61e8c1d8a6d0ad43400c0794',
             String: 'dwmjmgjm',
           },
-          '61e7e318a6d0ad43400a2b05': {
+          {
             fieldName: 'Sub Field 1',
             displayValue: 'nhnhghg\nh\njhfjhf\njf\njf',
+            fieldId: '61e8c1d8a6d0ad43400c0795',
             LongText: 'nhnhghg\nh\njhfjhf\njf\njf',
           },
-          '61e7e318a6d0ad43400a2b06': {
+          {
             fieldName: 'Sub Field 2',
             displayValue: '565',
+            fieldId: '61e8c1d8a6d0ad43400c0796',
             Number: 565,
           },
-          '61e7e318a6d0ad43400a2b07': {
+          {
             fieldName: 'Sub Field 3',
             displayValue: '2022-01-23',
+            fieldId: '61e8c1d8a6d0ad43400c0797',
             DateTime: new Date('2022-01-23T00:00:00.000Z'),
           },
-          '61e7e318a6d0ad43400a2b08': {
+          {
             fieldName: 'Sub Field 4',
             displayValue: 'false',
+            fieldId: '61e8c1d8a6d0ad43400c0798',
           },
-          '61e7e318a6d0ad43400a2b09': {
+          {
             fieldName: 'Sub Field 5',
             displayValue: 'test4',
+            fieldId: '61e8c1d8a6d0ad43400c0799',
             Set: '61e7e318a6d0ad43400a2b40',
           },
-          '61e7e318a6d0ad43400a2b0a': {
+          {
             fieldName: 'Sub Field 6',
             displayValue: 'kevinlaibuildit1',
+            fieldId: '61e8c1d8a6d0ad43400c079a',
             User: '5dfc9550f2743d6d65e8e5a1',
           },
-          '61e7e318a6d0ad43400a2b0b': {
+          {
             fieldName: 'Sub Field 7',
             displayValue: 'guard.jpeg',
+            fieldId: '61e8c1d8a6d0ad43400c079b',
             Image: {
               fileName: 'guard',
               fileType: 'jpeg',
             },
           },
-          '61e7e318a6d0ad43400a2b0c': {
+          {
             fieldName: 'Sub Field 8',
             displayValue: 'guard.jpeg',
+            fieldId: '61e8c1d8a6d0ad43400c079d',
             File: {
               fileName: 'guard',
               fileType: 'jpeg',
             },
           },
-          '61e7e318a6d0ad43400a2b0d': {
+          {
             fieldName: 'Sub Field 9',
             displayValue: 'mmmm',
+            fieldId: '61e8c1d8a6d0ad43400c079f',
             FilePath: 'mmmm',
           },
-          '61e7e318a6d0ad43400a2b0e': {
+          {
             fieldName: 'Sub Field 10',
             displayValue: 'dffdgdgd.com',
+            fieldId: '61e8c1d8a6d0ad43400c07a0',
             Url: 'dffdgdgd.com',
           },
-          '61e7e318a6d0ad43400a2b0f': {
+          {
             fieldName: 'Sub Field 11',
-            displayValue: '',
-            Formula: '575',
+            displayValue: '575',
+            fieldId: '61e8c1d8a6d0ad43400c07a1',
+            Formula: [
+              {
+                items: [
+                  {
+                    fieldId: '61e7e318a6d0ad43400a2b06',
+                    fieldType: 'Number',
+                    fieldName: 'Sub Field 2',
+                    isSub: true,
+                  },
+                  'plus',
+                  {
+                    fieldId: 'Constant',
+                    fieldType: 'Constant',
+                    fieldName: 'Constant',
+                    isSub: false,
+                    unit: null,
+                    constant: 10,
+                  },
+                ],
+              },
+            ],
           },
-        },
+        ],
       ],
       fieldName: 'Field 22',
+      fieldId: '61e7e318a6d0ad43400a2b03',
     };
     it('Convert Table Subvalues', () => {
       const { header, value } = mappedHeaderValue['Table'];

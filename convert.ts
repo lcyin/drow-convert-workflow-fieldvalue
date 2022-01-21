@@ -1,4 +1,4 @@
-import { ConvertedRecord, ConvertedValue } from './interface/convertedRecord';
+import { ConvertedRecord } from './interface/convertedRecord';
 import { record, workflow, projectUsers } from './data/data2';
 import { getWorkflowFieldValueFormatValueString } from './utils';
 import { calculateFormula } from './formula-utils';
@@ -6,32 +6,38 @@ import { calculateFormula } from './formula-utils';
 function convertRecord(record, workflow, projectUsers): ConvertedRecord {
   const projectUsersMap = getUserMap(projectUsers);
   const statusMap = getStatusMap(workflow.status);
+  const convertedValue = convertValue(
+    record.values,
+    workflow.headers,
+    undefined,
+    projectUsers
+  );
   return {
-    referenceId: record.referenceId.toHexString(),
-    documentId: record.documentId.toHexString(),
-    documentName: workflow.name,
+    referenceId: record?.referenceId?.toHexString(),
+    documentId: record?.documentId?.toHexString(),
+    documentName: workflow?.name,
     // todo
     title: 'fdghdgf-hdfgdf',
+    values: convertedValue,
+    assigneeIds: record?.assigneeIds?.map((id) => id?.toHexString()),
+    assigneeNames: record?.assigneeIds?.map(
+      (id) => projectUsersMap[id] && projectUsersMap[id]['name']
+    ),
+    statusId: record?.statusId?.toHexString(),
+    statusName: statusMap[record?.statusId?.toHexString()],
     // todo
-    values: {},
-    assigneeIds: record.assigneeIds.map((id) => id.toHexString()),
-    // todo
-    assigneeNames: record.assigneeIds.map((id) => projectUsersMap[id]['name']),
-    statusId: record.statusId.toHexString(),
-    // todo
-    statusName: statusMap[record.statusId.toHexString()],
-    // todo
-    dueDate: '2021-10-06T11:35:11.867+08:00',
-    dueDateType: record.dueDateType,
-    lastModifiedBy: record.lastModifiedBy.toHexString(),
-    createdBy: record.createdBy.toHexString(),
-    // todo
+    dueDate: record?.dueDate?.toJSON(),
+    dueDateType: record?.dueDateType,
+    lastModifiedBy: record?.lastModifiedBy?.toHexString(),
+    createdBy: record?.createdBy?.toHexString(),
     lastModifiedName:
-      projectUsersMap[record.lastModifiedBy.toHexString()]['name'],
-    // todo
-    createdName: projectUsersMap[record.createdBy.toHexString()]['name'],
-    createDate: record.createDate.toJSON(),
-    lastModifyDate: record.lastModifyDate.toJSON(),
+      projectUsersMap[record?.lastModifiedBy?.toHexString()] &&
+      projectUsersMap[record?.lastModifiedBy?.toHexString()]['name'],
+    createdName:
+      projectUsersMap[record?.createdBy?.toHexString()] &&
+      projectUsersMap[record?.createdBy?.toHexString()]['name'],
+    createDate: record?.createDate?.toJSON(),
+    lastModifyDate: record?.lastModifyDate?.toJSON(),
   };
 }
 
@@ -105,9 +111,10 @@ export function getConvertedValueObject(
     timezone,
     users
   );
-  const result = {
+  let result = {
     fieldName: header.fieldName,
     displayValue: fieldValue,
+    fieldId: recordvalue._id.toHexString(),
   };
   // Raw Value
   if (header.fieldType === 'AutoId') {
@@ -144,7 +151,8 @@ export function getConvertedValueObject(
       );
     }
 
-    result[header.fieldType] = formulaResult;
+    result[header.fieldType] = header.config.formula;
+    result.displayValue = formulaResult;
   } else {
     result[header.fieldType] = recordvalue.value;
   }
@@ -160,16 +168,18 @@ export function getConvertedTableValues(
 ) {
   const subHeaderMap = getHeaderMap(header.subHeaders);
   const convertedTableValues = recordvalue.value.map((sv, svi) => {
-    const convertedSubvalues = {};
+    const convertedSubvalues = [];
     sv.values.forEach((v, vi) => {
-      convertedSubvalues[v.fieldId.toHexString()] = getConvertedValueObject(
-        v,
-        recordvalues,
-        subHeaderMap[v.fieldId.toHexString()],
-        header,
-        timezone,
-        users,
-        svi
+      convertedSubvalues.push(
+        getConvertedValueObject(
+          v,
+          recordvalues,
+          subHeaderMap[v.fieldId.toHexString()],
+          header,
+          timezone,
+          users,
+          svi
+        )
       );
     });
     return convertedSubvalues;
@@ -177,18 +187,13 @@ export function getConvertedTableValues(
   const result = {
     [header.fieldType]: convertedTableValues,
     fieldName: header.fieldName,
+    fieldId: recordvalue.fieldId.toHexString(),
   };
   return result;
 }
 
-function convertValue(
-  values,
-  headers,
-  workflow,
-  timezone = '+0800',
-  users = []
-): ConvertedValue {
-  const convertedValue = {};
+function convertValue(values, headers, timezone = '+0800', users = []) {
+  const convertedValue = [];
   const headerMap = getHeaderMap(headers);
   values.forEach((value) => {
     const header = headerMap[value.fieldId.toHexString()];
@@ -199,31 +204,31 @@ function convertValue(
       header.fieldType !== 'Table' &&
       header.fieldType !== 'Section'
     ) {
-      convertedValue[value.fieldId.toHexString()] = getConvertedValueObject(
-        value,
-        values,
-        header,
-        undefined,
-        timezone,
-        projectUsers
-      );
-    } else {
-      if (header.fieldType === 'Table') {
-        convertedValue[value.fieldId.toHexString()] = getConvertedTableValues(
-          value,
-          values,
-          header,
-          timezone,
-          projectUsers
-        );
-      } else if (header.isMulti) {
-        convertedValue[value.fieldId.toHexString()] = getConvertedValueObject(
+      convertedValue.push(
+        getConvertedValueObject(
           value,
           values,
           header,
           undefined,
           timezone,
           projectUsers
+        )
+      );
+    } else {
+      if (header.fieldType === 'Table') {
+        convertedValue.push(
+          getConvertedTableValues(value, values, header, timezone, projectUsers)
+        );
+      } else if (header.isMulti) {
+        convertedValue.push(
+          getConvertedValueObject(
+            value,
+            values,
+            header,
+            undefined,
+            timezone,
+            projectUsers
+          )
         );
       } else {
         convertValue[header.fieldName] = '[Not Found]';
@@ -234,11 +239,5 @@ function convertValue(
 }
 
 const result = convertRecord(record, workflow, projectUsers);
-const value = convertValue(
-  record.values,
-  workflow.headers,
-  workflow,
-  undefined,
-  projectUsers
-);
-console.log(JSON.stringify(value));
+
+console.log(JSON.stringify(result));
