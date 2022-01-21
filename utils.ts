@@ -1,5 +1,5 @@
 import { ObjectId } from 'bson';
-import { format } from 'date-fns';
+import balanced = require('balanced-match');
 import * as moment from 'moment';
 
 export const getDocumentCommonFormatValueString = (value) => {
@@ -305,4 +305,143 @@ export function apiDateToMomentDate(date, dateType) {
   }
 
   return momentDate;
+}
+
+export const recordTitleFormatStringParam = {
+  maxlength: 20,
+  leftBracket: '{{',
+  rightBracket: '}}',
+};
+
+export function convertRecordTitle(
+  workflowRecord,
+  workflow,
+  timezone = '+0800',
+  users
+) {
+  function replaceKeysWithBracketOnString(
+    str: string,
+    keyValuePairsObject: { [key: string]: string },
+    leftBracket: string,
+    rightBracket: string
+  ): string {
+    const balancedResult = balanced(leftBracket, rightBracket, str);
+    if (balancedResult) {
+      const body =
+        typeof keyValuePairsObject[balancedResult.body] === 'string'
+          ? keyValuePairsObject[balancedResult.body]
+          : `${leftBracket}${balancedResult.body}${rightBracket}`;
+
+      return `${balancedResult.pre}${body}${replaceKeysWithBracketOnString(
+        balancedResult.post,
+        keyValuePairsObject,
+        leftBracket,
+        rightBracket
+      )}`;
+    } else {
+      return str;
+    }
+  }
+
+  function genReplaceKeysOnFormatStringFunction(
+    leftBracket: string = '{{',
+    rightBracket: string = '}}'
+  ) {
+    return (
+      formatString: string,
+      keyValuePairsObject: { [key: string]: string }
+    ) =>
+      replaceKeysWithBracketOnString(
+        formatString,
+        keyValuePairsObject,
+        leftBracket,
+        rightBracket
+      );
+  }
+
+  const getWorkflowRecordTitleByReplaceKeys = (
+    recordTitleFormatString: string,
+    keyValuePairsObject: { [key: string]: string }
+  ) =>
+    genReplaceKeysOnFormatStringFunction(
+      recordTitleFormatStringParam.leftBracket,
+      recordTitleFormatStringParam.rightBracket
+    )(recordTitleFormatString, keyValuePairsObject);
+
+  function getKeysInBracketsFromString(
+    str: string,
+    leftBracket: string,
+    rightBracket: string
+  ) {
+    const result: string[] = [];
+
+    const balancedResult = balanced(leftBracket, rightBracket, str);
+    if (balancedResult) {
+      result.push(balancedResult.body);
+
+      getKeysInBracketsFromString(
+        balancedResult.post,
+        leftBracket,
+        rightBracket
+      ).forEach((s) => {
+        if (s !== result[0]) result.push(s);
+      });
+
+      return result;
+    } else {
+      return result;
+    }
+  }
+  function genGetKeysFromFormatStringFunction(
+    leftBracket: string = '{{',
+    rightBracket: string = '}}'
+  ) {
+    return (formatString: string) =>
+      getKeysInBracketsFromString(formatString, leftBracket, rightBracket);
+  }
+
+  const getKeysFromWorkflowRecordTitleFormatString = (
+    recordTitleFormatString: string
+  ) =>
+    genGetKeysFromFormatStringFunction(
+      recordTitleFormatStringParam.leftBracket,
+      recordTitleFormatStringParam.rightBracket
+    )(recordTitleFormatString);
+
+  const recordTitleKeys = getKeysFromWorkflowRecordTitleFormatString(
+    workflow.recordTitleFormatString
+  );
+  const keyValuePairsObject: { [key: string]: string } = {};
+  for (const recordTitleKey of recordTitleKeys) {
+    const targetValue = workflowRecord.values.find(
+      (v) => v.fieldId.toHexString() === recordTitleKey
+    );
+    const targetHeader = workflow.headers.find(
+      (h) => h._id.toHexString() === recordTitleKey
+    );
+
+    // if can find the value, header and it is not multi and table
+    if (
+      targetValue &&
+      targetHeader &&
+      !targetHeader.isMulti &&
+      targetHeader.fieldType !== 'Table'
+    ) {
+      keyValuePairsObject[recordTitleKey] =
+        getWorkflowFieldValueFormatValueString(
+          targetValue,
+          targetHeader,
+          timezone,
+          users
+        ) as string;
+    } else {
+      keyValuePairsObject[recordTitleKey] = '';
+    }
+  }
+
+  const recordTitle = getWorkflowRecordTitleByReplaceKeys(
+    workflow.recordTitleFormatString,
+    keyValuePairsObject
+  );
+  return recordTitle;
 }

@@ -1,6 +1,9 @@
 import { ConvertedRecord } from './interface/convertedRecord';
 import { record, workflow, projectUsers } from './data/data2';
-import { getWorkflowFieldValueFormatValueString } from './utils';
+import {
+  convertRecordTitle,
+  getWorkflowFieldValueFormatValueString,
+} from './utils';
 import { calculateFormula } from './formula-utils';
 
 function convertRecord(record, workflow, projectUsers): ConvertedRecord {
@@ -12,12 +15,18 @@ function convertRecord(record, workflow, projectUsers): ConvertedRecord {
     undefined,
     projectUsers
   );
+  const recordTitle = convertRecordTitle(
+    record,
+    workflow,
+    undefined,
+    projectUsers
+  );
+
   return {
     referenceId: record?.referenceId?.toHexString(),
     documentId: record?.documentId?.toHexString(),
     documentName: workflow?.name,
-    // todo
-    title: 'fdghdgf-hdfgdf',
+    title: recordTitle,
     values: convertedValue,
     assigneeIds: record?.assigneeIds?.map((id) => id?.toHexString()),
     assigneeNames: record?.assigneeIds?.map(
@@ -26,7 +35,7 @@ function convertRecord(record, workflow, projectUsers): ConvertedRecord {
     statusId: record?.statusId?.toHexString(),
     statusName: statusMap[record?.statusId?.toHexString()],
     // todo
-    dueDate: record?.dueDate?.toJSON(),
+    dueDate: record?.dueDate ? record?.dueDate?.toJSON() : null,
     dueDateType: record?.dueDateType,
     lastModifiedBy: record?.lastModifiedBy?.toHexString(),
     createdBy: record?.createdBy?.toHexString(),
